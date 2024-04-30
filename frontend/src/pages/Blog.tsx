@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useBlog } from "../hooks"
+import { PostType, useBlog } from "../hooks"
 import { FullBlog } from "../components/FullBlog";
+import { Loading } from "../components/Loading";
 
 
 const Blog = () => {
@@ -11,12 +12,12 @@ const Blog = () => {
 
   if(loading){
     return <div>
-      loading...
+      <Loading/>
     </div>
   }
   return (
     <div>
-      <FullBlog blog={blog}/>
+      {blog && <FullBlog blog={blog as PostType} />}
     </div>
   )
 }
