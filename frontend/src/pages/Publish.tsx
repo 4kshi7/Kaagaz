@@ -54,7 +54,7 @@ export const Publish = () => {
   );
 };
 
-function TextEditor({
+export function TextEditor({
   onChange,
 }: {
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;

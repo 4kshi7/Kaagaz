@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
-import { createPostInput, updatePostInput } from "@akshit2k/medium-common";
+import { createPostInput, updatePostInput, createCommentInput,updateCommentInput } from "@akshit2k/medium-common";
 
 export const blogRouter = new Hono<{
   Bindings: {
@@ -143,5 +143,102 @@ blogRouter.get("/:id", async (c) => {
     return c.json({
       message: "Error while fetching blog post",
     });
+  }
+});
+
+
+// Create a new comment for a post
+blogRouter.post("/:postId/comments", async (c) => {
+  const postId = c.req.param("postId");
+  const body = await c.req.json();
+  const result = createCommentInput.safeParse(body); // Assuming you have a safeParse function for input validation
+  if (!result.success) {
+    c.status(411);
+    return c.json({
+      message: "Inputs not correct",
+    });
+  }
+  const { content } = result.data;
+  const userId = c.get("userId");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const comment = await prisma.comment.create({
+      data: {
+        postId: Number(postId),
+        userId: Number(userId),
+        content: content, 
+      },
+    });
+    return c.json(comment);
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    c.status(500);
+    return c.json({ error: "Error creating comment" });
+  }
+});
+
+
+// Get all comments for a post
+blogRouter.get("/:postId/comments", async (c) => {
+  const postId = c.req.param("postId");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const comments = await prisma.comment.findMany({
+      where: {
+        postId: Number(postId),
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+    return c.json(comments);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    c.status(500);
+    return c.json({ error: "Error fetching comments" });
+  }
+});
+
+// Update a comment
+blogRouter.put("/:postId/comments/:commentId", async (c) => {
+  const postId = c.req.param("postId");
+  const commentId = c.req.param("commentId");
+  const body = await c.req.json();
+  const result = updateCommentInput.safeParse(body); 
+  if (!result.success) {
+    c.status(411);
+    return c.json({
+      message: "Inputs not correct",
+    });
+  }
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const updatedComment = await prisma.comment.update({
+      where: {
+        id: Number(commentId),
+      },
+      data: {
+        content: result.data.content, // Access the content directly from result.data
+      },
+    });
+    return c.json(updatedComment);
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    c.status(500);
+    return c.json({ error: "Error updating comment" });
   }
 });

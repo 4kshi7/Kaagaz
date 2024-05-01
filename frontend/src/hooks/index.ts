@@ -2,14 +2,25 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../config";
 
-export interface PostType{
-    "content": string,
-    "title": string,
-    "publishedDate" : string,
-    "id": number,
-    "author": {
-        "name": string
-    }
+export interface PostType {
+  content: string;
+  title: string;
+  publishedDate: string;
+  id: number;
+  author: {
+    name: string;
+  };
+}
+
+export interface Comment {
+  id: number;
+  userId: number;
+  postId: number;
+  content: string;
+  createdAt: Date;
+  user: {
+    name: string;
+  };
 }
 
 export const useBlogs = () => {
@@ -17,14 +28,16 @@ export const useBlogs = () => {
   const [blogs, setBlogs] = useState<PostType[]>([]);
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/v1/blog/bulk`,{
-        headers:{
-            Authorization: localStorage.getItem('token')
-        }
-    }).then((response) => {
-      setBlogs(response.data.post);
-      setLoading(false);
-    });
+    axios
+      .get(`${BACKEND_URL}/api/v1/blog/bulk`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setBlogs(response.data.post);
+        setLoading(false);
+      });
   }, []);
 
   return {
@@ -33,24 +46,70 @@ export const useBlogs = () => {
   };
 };
 
+export const useBlog = ({ id }: { id: string }) => {
+  const [loading, setLoading] = useState(true);
+  const [blog, setBlog] = useState<PostType>();
 
-export const useBlog = ( { id } : { id:string } ) => {
-    const [loading, setLoading] = useState(true);
-    const [blog, setBlog] = useState<PostType>();
-  
-    useEffect(() => {
-      axios.get(`${BACKEND_URL}/api/v1/blog/${id}`,{
-          headers:{
-              Authorization: localStorage.getItem('token')
-          }
-      }).then((response) => {
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/api/v1/blog/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
         setBlog(response.data.post);
         setLoading(false);
       });
-    }, [id]);
-  
-    return {
-      loading,
-      blog,
-    };
+  }, [id]);
+
+  return {
+    loading,
+    blog,
   };
+};
+
+export interface CommentData {
+  id: number;
+  userId: number;
+  postId: number;
+  content: string;
+  createdAt: string;
+  user: {
+    email: string;
+  };
+}
+
+export const useComments = (postId: number) => {
+  const [comments, setComments] = useState<CommentData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const response = await axios.get(
+          `https://medium.akshitgaur2003.workers.dev/api/v1/blog/${postId}/comments`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        );
+
+        setComments(response.data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [postId]); // Trigger fetchComments when postId changes
+
+  return { comments, isLoading, isError };
+};
