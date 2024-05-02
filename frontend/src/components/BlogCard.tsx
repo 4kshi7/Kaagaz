@@ -17,13 +17,13 @@ export const BlogCard = ({
 }: BlogCardProps) => {
   return (
     <Link to={`/blog/${id}`}>
-      <div className="p-5 border-b border-slate-200 pb-4 cursor-pointer">
+      <div className="w-[80vw] p-5 border-slate-200 pb-4 cursor-pointer">
         <div className="flex items-center gap-1">
           <div className="flex justify-center flex-col">
             <Avatar name={authorName} />
           </div>
           <div className="font-normal">{authorName}</div>
-          <div className="font-thin text-slate-500"> • {publishedDate}</div>
+          <div className="text-xs font-thin text-slate-500"> • {publishedDate}</div>
         </div>
         <div className="flex font-bold">{title}</div>
         <div className="">{content}</div>

@@ -3,18 +3,7 @@ import { Appbar } from "../components/Appbar";
 import { BlogCard } from "../components/BlogCard";
 import { useBlogs } from "../hooks";
 import { Loading } from "../components/Loading";
-
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  };
-
-  return date.toLocaleDateString("en-US", options);
-}
+import { formatCommentTime } from "../components/FullBlog";
 
 export const Blogs = () => {
   const { loading, blogs } = useBlogs();
@@ -26,9 +15,11 @@ export const Blogs = () => {
   }
 
   if (loading) {
-    return <div>
-      <Loading/>
-    </div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   return (
@@ -38,13 +29,13 @@ export const Blogs = () => {
         <div className="sm:max-w-2xl flex flex-col  ">
           {/* Button to toggle sorting order */}
           <div className="mx-auto mt-10">
-          <button
-            className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
-            onClick={() => setSortByLatest(!sortByLatest)}
-          >
-            {sortByLatest ? "Show Oldest First" : "Show Latest First"}
-          </button>
-        </div>
+            <button
+              className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
+              onClick={() => setSortByLatest(!sortByLatest)}
+            >
+              {sortByLatest ? "Show Oldest First" : "Show Latest First"}
+            </button>
+          </div>
 
           {sortedBlogs.map((blog) => (
             <div
@@ -56,13 +47,11 @@ export const Blogs = () => {
                 authorName={blog.author.name || "Anonymous"}
                 title={blog.title}
                 content={blog.content}
-                publishedDate={formatDate(blog.publishedDate)}
+                publishedDate={formatCommentTime(blog.publishedDate)}
               />
             </div>
           ))}
         </div>
-
-        
       </div>
     </div>
   );
