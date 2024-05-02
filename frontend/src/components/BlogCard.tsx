@@ -8,6 +8,21 @@ interface BlogCardProps {
   publishedDate: string;
 }
 
+function calculateReadingTime(content: string): string {
+  const wordsPerSecond = 3;
+  const wordsCount = content.split(/\s+/).length;
+  const readingTimeInSeconds = Math.ceil(wordsCount / wordsPerSecond);
+
+  if (readingTimeInSeconds < 60) {
+    return `${readingTimeInSeconds} seconds`;
+  } else {
+    const readingTimeInMinutes = Math.ceil(readingTimeInSeconds / 60);
+    return `${readingTimeInMinutes} minute${
+      readingTimeInMinutes > 1 ? "s" : ""
+    }`;
+  }
+}
+
 export const BlogCard = ({
   id,
   authorName,
@@ -23,12 +38,19 @@ export const BlogCard = ({
             <Avatar name={authorName} />
           </div>
           <div className="font-normal">{authorName}</div>
-          <div className="text-xs font-thin text-slate-500"> • {publishedDate}</div>
+          <div className="text-xs font-thin text-slate-500">
+            {" "}
+            • {publishedDate}
+          </div>
         </div>
         <div className="flex font-bold">{title}</div>
-        <div className="">{content}</div>
-        <div className="text-slate-500 text-sm">
-          {Math.ceil(content.length / 100) + " minutes"}
+        <div className="w-[65vw] md:w-[65vw]">
+          {content.split(" ")[0].length > 25
+            ? content.split(" ")[0].slice(0, 25) + "..."
+            : content}
+        </div>
+        <div className="text-slate-400 text-xs">
+          {"Read time "+calculateReadingTime(content) }
         </div>
       </div>
     </Link>

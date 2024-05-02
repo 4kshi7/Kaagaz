@@ -23,7 +23,7 @@ export const Blogs = () => {
   }
 
   return (
-    <div>
+    <div className="overflow-y-hidden">
       <Appbar />
       <div className="px-10 md:px-32 flex justify-center gap-5">
         <div className="sm:max-w-2xl flex flex-col  ">
