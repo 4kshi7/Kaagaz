@@ -242,3 +242,27 @@ blogRouter.put("/:postId/comments/:commentId", async (c) => {
     return c.json({ error: "Error updating comment" });
   }
 });
+
+
+// DELETE endpoint for deleting a blog post
+blogRouter.delete("/:id", async (c) => {
+  const id = c.req.param("id");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    await prisma.post.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    return c.json({
+      message: "Blog post deleted successfully",
+    });
+  } catch (e) {
+    console.error("Error deleting blog post:", e);
+    c.status(500);
+    return c.json({ error: "Error deleting blog post" });
+  }
+});

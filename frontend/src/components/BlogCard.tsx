@@ -44,7 +44,7 @@ export const BlogCard = ({
           </div>
         </div>
         <div className="flex font-bold">{title}</div>
-        <div className="w-[65vw] md:w-[65vw]">
+        <div className="w-[65vw] md:w-[60vw] lg:w-[45vw]">
           {content.split(" ")[0].length > 25
             ? content.split(" ")[0].slice(0, 25) + "..."
             : content}
