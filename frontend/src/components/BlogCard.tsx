@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 interface BlogCardProps {
@@ -6,6 +8,7 @@ interface BlogCardProps {
   title: string;
   content: string;
   publishedDate: string;
+  reference: React.RefObject<HTMLInputElement>;
 }
 
 function calculateReadingTime(content: string): string {
@@ -23,37 +26,49 @@ function calculateReadingTime(content: string): string {
   }
 }
 
-export const BlogCard = ({
+export const BlogCard: React.FC<BlogCardProps> = ({
   id,
   authorName,
   title,
   content,
   publishedDate,
-}: BlogCardProps) => {
+  // reference,
+}) => {
   return (
-    <Link to={`/blog/${id}`}>
-      <div className="w-[80vw] p-5 border-slate-200 pb-4 cursor-pointer">
-        <div className="flex items-center gap-1">
-          <div className="flex justify-center flex-col">
-            <Avatar name={authorName} />
-          </div>
-          <div className="font-normal">{authorName}</div>
-          <div className="text-xs font-thin text-slate-500">
-            {" "}
-            • {publishedDate}
-          </div>
+    <motion.div
+      drag
+      // dragConstraints={{ left: 2, right:2, top: 2, bottom:2 }}
+      whileDrag={{ scale: 1.2 }}
+      dragElastic={0.1}
+      dragSnapToOrigin={true}
+      className="relative flex-shrink-0 flex-col w-64 h-64 gap-5 rounded-[50px]  backdrop-blur-md bg-black/70 text-white p-4 overflow-hidden"
+    >
+      <div className="flex gap-2">
+        <div className="flex items-center">
+          <Avatar name={authorName} />
         </div>
-        <div className="flex font-bold">{title}</div>
-        <div className="w-[65vw] md:w-[60vw] lg:w-[45vw]">
-          {content.split(" ")[0].length > 25
-            ? content.split(" ")[0].slice(0, 25) + "..."
-            : content}
+        <h1 className="flex items-center">{authorName.split(" ")[0]}</h1>
+        <h1 className="text-xs font-extralight text-zinc-400 flex items-center">
+          {publishedDate}
+        </h1>
+      </div>
+      <Link to={`/blog/${id}`}>
+        <div className="text-2xl font-semibold">
+          {title.length > 15 ? title.slice(0, 15) + "..." : title}
         </div>
-        <div className="text-slate-400 text-xs">
-          {"Read time "+calculateReadingTime(content) }
+        <div className="text-sm text-zinc-400 tracking-tight">
+          {content.length > 150 ? content.slice(0, 150) + "..." : content}
+        </div>
+      </Link>
+      <div className="absolute bottom-0 left-0 bg-zinc-800 text-zinc-400 w-full h-10 text-xs font-light px-7 py-3 flex justify-between">
+        {"Read time " + calculateReadingTime(content)}
+        <div className="text-white text-2xl flex items-center justify-center">
+          <button>
+            <MdDelete />
+          </button>
         </div>
       </div>
-    </Link>
+    </motion.div>
   );
 };
 

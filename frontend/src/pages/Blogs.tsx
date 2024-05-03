@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Appbar } from "../components/Appbar";
 import { BlogCard } from "../components/BlogCard";
 import { useBlogs } from "../hooks";
@@ -6,6 +6,7 @@ import { Loading } from "../components/Loading";
 import { formatCommentTime } from "../components/FullBlog";
 
 export const Blogs = () => {
+  const ref = useRef(null);
   const { loading, blogs } = useBlogs();
   const [sortByLatest, setSortByLatest] = useState(true);
 
@@ -25,29 +26,26 @@ export const Blogs = () => {
   return (
     <div className="overflow-y-hidden">
       <Appbar />
-      <div className="px-10 md:px-32 flex justify-center gap-5">
-        <div className="sm:max-w-2xl flex flex-col  ">
-          {/* Button to toggle sorting order */}
-          <div className="mx-auto mt-10">
-            <button
-              className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
-              onClick={() => setSortByLatest(!sortByLatest)}
-            >
-              {sortByLatest ? "Show Oldest First" : "Show Latest First"}
-            </button>
-          </div>
-
+      {/* Button to toggle sorting order */}
+      <div className="flex flex-col">
+        <div className="mx-auto mt-10">
+          <button
+            className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
+            onClick={() => setSortByLatest(!sortByLatest)}
+          >
+            {sortByLatest ? "Show Oldest First" : "Show Latest First"}
+          </button>
+        </div>
+        <div className="flex  h-fit flex-wrap sm:gap-10  md:gap-10 lg:gap-16  justify-center items-center overflow-y-auto">
           {sortedBlogs.map((blog) => (
-            <div
-              className=" my-6 hover:scale-[103%] duration-300 shadow-lg"
-              key={blog.id}
-            >
+            <div className="my-6 w-fit flex " key={blog.id}>
               <BlogCard
                 id={blog.id}
                 authorName={blog.author.name || "Anonymous"}
                 title={blog.title}
                 content={blog.content}
                 publishedDate={formatCommentTime(blog.publishedDate)}
+                reference={ref}
               />
             </div>
           ))}
