@@ -18,7 +18,7 @@ export const Appbar = () => {
   return (
     <div className="border-b flex justify-between items-center px-10 py-4">
       <Link to={"/blogs"}>
-        <div className="cursor-pointer text-xl font-medium hover:scale-[110%] duration-100">Kaagaz✏️</div>
+        <div className="cursor-pointer text-xl hover:scale-[110%] duration-100">Kaagaz✏️</div>
       </Link>
       <div className="flex justify-center items-center gap-3">
         {session ? (
