@@ -266,3 +266,76 @@ blogRouter.delete("/:id", async (c) => {
     return c.json({ error: "Error deleting blog post" });
   }
 });
+
+
+// Like a post
+blogRouter.post("/:postId/likes", async (c) => {
+  const postId = c.req.param("postId");
+  const userId = c.get("userId");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    // Check if the user already liked the post
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        postId: Number(postId),
+        userId: Number(userId),
+      },
+    });
+
+    if (existingLike) {
+      // User already liked the post, delete the like
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id,
+        },
+      });
+      return c.json({ message: "Post unliked successfully" });
+    } else {
+      // User hasn't liked the post yet, create a new like entry
+      const like = await prisma.like.create({
+        data: {
+          postId: Number(postId),
+          userId: Number(userId),
+        },
+      });
+      return c.json(like);
+    }
+  } catch (error) {
+    console.error("Error liking post:", error);
+    c.status(500);
+    return c.json({ error: "Error liking post" });
+  }
+});
+
+
+// Get users who liked a post
+blogRouter.get("/:postId/likes", async (c) => {
+  const postId = c.req.param("postId");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env?.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const likes = await prisma.like.findMany({
+      where: {
+        postId: Number(postId),
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true, // Assuming you want to include user's name
+          },
+        },
+      },
+    });
+    return c.json(likes);
+  } catch (error) {
+    console.error("Error fetching likes:", error);
+    c.status(500);
+    return c.json({ error: "Error fetching likes" });
+  }
+});
