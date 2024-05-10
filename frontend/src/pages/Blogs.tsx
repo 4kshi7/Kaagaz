@@ -35,14 +35,14 @@ export const Blogs = () => {
       <Appbar />
       {/* Button to toggle sorting order */}
       <div className="flex flex-col">
-        {/* <div className="mx-auto mt-10">
+        <div className="mx-auto mt-10">
           <button
             className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
             onClick={() => setSortByLatest(!sortByLatest)}
           >
             {sortByLatest ? "Show Oldest First" : "Show Latest First"}
           </button>
-        </div> */}
+        </div>
         <div className="flex h-fit flex-wrap sm:gap-10  md:gap-10 lg:gap-16  justify-center items-center overflow-hidden">
           {sortedBlogs
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
