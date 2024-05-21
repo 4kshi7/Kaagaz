@@ -29,7 +29,6 @@ export const Publish = () => {
       try {
         await uploadBytes(imageRef, image);
         imageUrl = await getDownloadURL(imageRef);
-        console.log("Image uploaded successfully, URL:", imageUrl);
       } catch (error) {
         console.error("Error uploading image:", error);
       }
