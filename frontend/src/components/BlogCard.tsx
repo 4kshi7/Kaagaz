@@ -8,7 +8,7 @@ interface BlogCardProps {
   title: string;
   content: string;
   publishedDate: string;
-  reference: React.RefObject<HTMLInputElement>;
+  imgUrl: string;
 }
 
 function calculateReadingTime(content: string): string {
@@ -32,40 +32,53 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   title,
   content,
   publishedDate,
-  // reference,
+  imgUrl,
 }) => {
   return (
     <motion.div
       drag
-      // dragConstraints={{ left: 2, right:2, top: 2, bottom:2 }}
+      dragConstraints={{ left: 0, top: 0, right: 0, bottom: 0 }}
       whileDrag={{ scale: 1.2 }}
       dragElastic={0.1}
       dragSnapToOrigin={true}
-      className="relative flex-shrink-0 flex-col w-64 h-64 gap-5 rounded-[50px]  backdrop-blur-md bg-black/70 text-white p-4 overflow-hidden"
+      className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl md:w-fit hover:bg-gray-100 p-5 "
     >
-      <div className="flex gap-2">
-        <div className="flex items-center">
-          <Avatar name={authorName} />
+      <div className="flex gap-5">
+        <div className="w-[18vh] h-[18vh] md:w-[20vh] md:h-[20vh]">
+          <img
+            className=" object-cover w-full h-full rounded-3xl"
+            src={imgUrl}
+            alt=""
+          />
         </div>
-        <h1 className="flex items-center">{authorName.split(" ")[0]}</h1>
-        <h1 className="text-xs font-extralight text-zinc-400 flex items-center">
-          {publishedDate}
-        </h1>
-      </div>
-      <Link to={`/blog/${id}`}>
-        <div className="text-2xl font-semibold">
-          {title.length > 15 ? title.slice(0, 15) + "..." : title}
-        </div>
-        <div className="text-sm text-zinc-400 tracking-tight">
-          {content.length > 150 ? content.slice(0, 150) + "..." : content}
-        </div>
-      </Link>
-      <div className="absolute bottom-0 left-0 bg-zinc-800 text-zinc-400 w-full h-10 text-xs font-light px-7 py-3 flex justify-between">
-        {"Read time " + calculateReadingTime(content)}
-        <div className="text-white text-2xl flex items-center justify-center">
-          <button>
-            <MdDelete />
-          </button>
+        <div>
+          <div className="flex gap-2">
+            <div className="flex items-center">
+              <Avatar name={authorName} />
+            </div>
+            <h1 className="flex items-center">{authorName.split(" ")[0]}</h1>
+            <h1 className="text-xs font-normal text-zinc-800 flex items-center">
+              {publishedDate}
+            </h1>
+          </div>
+          <div className="flex flex-col">
+            <Link to={`/blog/${id}`}>
+            <div className="text-2xl font-semibold">
+              {title.length > 15 ? title.slice(0, 15) + "..." : title}
+            </div>
+            <div className="text-sm text-zinc-800 tracking-tight w-[38vw] h-[85%]">
+              {content.length > 40 ? content.slice(0, 40) + "..." : content}
+            </div>
+            </Link>
+            <div className=" text-black w-full h-10 text-xs font-normal flex justify-between">
+              {"Read time " + calculateReadingTime(content)}
+              <div className="text-white text-2xl flex items-center justify-center">
+                <button>
+                  <MdDelete />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

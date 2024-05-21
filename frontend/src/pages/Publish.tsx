@@ -4,10 +4,57 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebaseConfig";
+import { v4 } from "uuid";
+
 export const Publish = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const navigate = useNavigate();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleClick = async () => {
+    let imageUrl =
+      "https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4=";
+
+    if (image) {
+      const imageRef = ref(storage, `images/${v4()}`);
+      try {
+        await uploadBytes(imageRef, image);
+        imageUrl = await getDownloadURL(imageRef);
+        console.log("Image uploaded successfully, URL:", imageUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/v1/blog`,
+        {
+          title,
+          content: description,
+          imgUrl: imageUrl,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      navigate(`/blog/${response.data.id}`);
+    } catch (error) {
+      console.error("Error posting blog:", error);
+    }
+  };
   return (
     <div>
       <Appbar />
@@ -28,26 +75,13 @@ export const Publish = () => {
             }}
           />
           <button
-            onClick={async () => {
-              const response = await axios.post(
-                `${BACKEND_URL}/api/v1/blog`,
-                {
-                  title,
-                  content: description,
-                },
-                {
-                  headers: {
-                    Authorization: localStorage.getItem("token"),
-                  },
-                }
-              );
-              navigate(`/blog/${response.data.id}`);
-            }}
+            onClick={handleClick}
             type="submit"
             className="mt-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
           >
             Publish post
           </button>
+          <input className="ml-4" type="file" onChange={handleImageChange} />
         </div>
       </div>
     </div>

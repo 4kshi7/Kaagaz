@@ -2,7 +2,12 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
-import { createPostInput, updatePostInput, createCommentInput,updateCommentInput } from "@akshit2k/medium-common";
+import {
+  createPostInput,
+  updatePostInput,
+  createCommentInput,
+  updateCommentInput,
+} from "@akshit2k/medium-common";
 
 export const blogRouter = new Hono<{
   Bindings: {
@@ -52,6 +57,7 @@ blogRouter.post("/", async (c) => {
     data: {
       title: body.title,
       content: body.content,
+      imgUrl: body.imgUrl,
       authorId: Number(userId),
     },
   });
@@ -82,6 +88,7 @@ blogRouter.put("/", async (c) => {
     data: {
       title: body.title,
       content: body.content,
+      imgUrl: body.imgUrl,
     },
   });
 
@@ -100,6 +107,7 @@ blogRouter.get("/bulk", async (c) => {
       title: true,
       id: true,
       publishedDate: true,
+      imgUrl: true,
       author: {
         select: {
           name: true,
@@ -127,6 +135,7 @@ blogRouter.get("/:id", async (c) => {
         title: true,
         content: true,
         publishedDate: true,
+        imgUrl: true,
         author: {
           select: {
             name: true,
@@ -145,7 +154,6 @@ blogRouter.get("/:id", async (c) => {
     });
   }
 });
-
 
 // Create a new comment for a post
 blogRouter.post("/:postId/comments", async (c) => {
@@ -169,7 +177,7 @@ blogRouter.post("/:postId/comments", async (c) => {
       data: {
         postId: Number(postId),
         userId: Number(userId),
-        content: content, 
+        content: content,
       },
     });
     return c.json(comment);
@@ -179,7 +187,6 @@ blogRouter.post("/:postId/comments", async (c) => {
     return c.json({ error: "Error creating comment" });
   }
 });
-
 
 // Get all comments for a post
 blogRouter.get("/:postId/comments", async (c) => {
@@ -214,7 +221,7 @@ blogRouter.put("/:postId/comments/:commentId", async (c) => {
   const postId = c.req.param("postId");
   const commentId = c.req.param("commentId");
   const body = await c.req.json();
-  const result = updateCommentInput.safeParse(body); 
+  const result = updateCommentInput.safeParse(body);
   if (!result.success) {
     c.status(411);
     return c.json({
@@ -243,7 +250,6 @@ blogRouter.put("/:postId/comments/:commentId", async (c) => {
   }
 });
 
-
 // DELETE endpoint for deleting a blog post
 blogRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
@@ -266,7 +272,6 @@ blogRouter.delete("/:id", async (c) => {
     return c.json({ error: "Error deleting blog post" });
   }
 });
-
 
 // Like a post
 blogRouter.post("/:postId/likes", async (c) => {
@@ -309,7 +314,6 @@ blogRouter.post("/:postId/likes", async (c) => {
     return c.json({ error: "Error liking post" });
   }
 });
-
 
 // Get users who liked a post
 blogRouter.get("/:postId/likes", async (c) => {

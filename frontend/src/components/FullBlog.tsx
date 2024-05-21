@@ -6,7 +6,6 @@ import { Avatar } from "./BlogCard";
 import { WriteComment } from "./WriteComment";
 
 export const FullBlog = ({ blog }: { blog: PostType }) => {
-
   const [comments, setComments] = useState<CommentData[]>([]);
   const { isLoading, comments: fetchedComments } = useComments(blog.id);
 
@@ -15,6 +14,8 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
       setComments(fetchedComments);
     }
   }, [isLoading, fetchedComments]);
+
+  console.log(blog.imgUrl)
 
   return (
     <div>
@@ -38,10 +39,18 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
               </div>
               {`Posted on ${formatCommentTime(blog.publishedDate.toString())}`}
             </div>
+            <div className=" w-[50vw] h-[80vh]">
+              <img
+                src={blog.imgUrl}
+                alt=""
+                className=" object-cover w-full h-full rounded-3xl"
+              />
+            </div>
+
             {/* Render comment cards */}
             <div className="w-[85vw]">
               <div className="mt-10 text-xl font-bold ">Comments</div>
-              <WriteComment postId={blog.id}/>
+              <WriteComment postId={blog.id} />
               {comments &&
                 comments.map((comment) => (
                   <div className="mb-5">

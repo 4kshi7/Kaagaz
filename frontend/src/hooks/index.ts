@@ -7,6 +7,7 @@ export interface PostType {
   title: string;
   publishedDate: string;
   id: number;
+  imgUrl: string;
   author: {
     name: string;
   };
@@ -20,6 +21,16 @@ export interface Comment {
   createdAt: Date;
   user: {
     name: string;
+  };
+}
+
+export interface Like {
+  id: number;
+  userId: number;
+  postId: number;
+  user: {
+    id: number;
+    email: string;
   };
 }
 
@@ -112,4 +123,39 @@ export const useComments = (postId: number) => {
   }, [postId]); // Trigger fetchComments when postId changes
 
   return { comments, isLoading, isError };
+};
+
+
+export const useLikes = (postId: number) => {
+  const [likes, setLikes] = useState<Like[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}/api/v1/blog/${postId}/likes`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        );
+
+        setLikes(response.data);
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLikes();
+  }, [postId]); // Trigger fetchLikes when postId changes
+
+  return { likes, isLoading, isError };
 };
