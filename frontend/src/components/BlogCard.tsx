@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { MdDelete } from "react-icons/md";
+// import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 interface BlogCardProps {
   id: number;
@@ -34,6 +35,26 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   publishedDate,
   imgUrl,
 }) => {
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  let titleSliceLength = 20;
+  let contentSliceLength = 40;
+
+  if (screenSize >= 641 && screenSize <= 1024) {
+    titleSliceLength = 40;
+    contentSliceLength = 75;
+  } else if (screenSize > 1024) {
+    titleSliceLength = 45;
+    contentSliceLength = 170;
+  }
+
   return (
     <motion.div
       drag
@@ -41,17 +62,10 @@ export const BlogCard: React.FC<BlogCardProps> = ({
       whileDrag={{ scale: 1.2 }}
       dragElastic={0.1}
       dragSnapToOrigin={true}
-      className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl md:w-fit hover:bg-gray-100 p-5 "
+      className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 w-full "
     >
-      <div className="flex gap-5">
-        <div className="w-[18vh] h-[18vh] md:w-[20vh] md:h-[20vh]">
-          <img
-            className=" object-cover w-full h-full rounded-3xl"
-            src={imgUrl}
-            alt=""
-          />
-        </div>
-        <div>
+      <div className=" flex gap-2 justify-between ">
+        <div className=" flex flex-col justify-between">
           <div className="flex gap-2">
             <div className="flex items-center">
               <Avatar name={authorName} />
@@ -61,24 +75,35 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               {publishedDate}
             </h1>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-between h-full w-[60vw] lg:w-[40vw]">
             <Link to={`/blog/${id}`}>
-            <div className="text-2xl font-semibold">
-              {title.length > 15 ? title.slice(0, 15) + "..." : title}
-            </div>
-            <div className="text-sm text-zinc-800 tracking-tight w-[38vw] h-[85%]">
-              {content.length > 40 ? content.slice(0, 40) + "..." : content}
-            </div>
+              <div className="text-lg md:text-2xl font-semibold">
+                {title.length > titleSliceLength
+                  ? title.slice(0, titleSliceLength) + "..."
+                  : title}
+              </div>
+              <div className="text-sm text-zinc-800 tracking-tight w-[38vw] h-[85%]">
+              {content.split(" ")[0].length > 25
+            ? content.split(" ")[0].slice(0, 10) + "..."
+            : content.slice(0,contentSliceLength)}
+              </div>
             </Link>
-            <div className=" text-black w-full h-10 text-xs font-normal flex justify-between">
+            <div className="text-black w-full text-xs font-normal flex justify-between">
               {"Read time " + calculateReadingTime(content)}
-              <div className="text-white text-2xl flex items-center justify-center">
-                <button>
-                  <MdDelete />
-                </button>
+              <div className="">
+                {/* <button>
+                  <MdDelete className="h-4 w-4 text-black" />
+                </button> */}
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex items-center justify-center h-full">
+          <img
+            className="w-[18vw] h-[18vw] lg:w-[9vw] lg:h-[9vw] md:w-[10vw] md:h-[10vw] object-cover rounded-xl"
+            src={imgUrl}
+            alt=""
+          />
         </div>
       </div>
     </motion.div>
@@ -96,7 +121,7 @@ export function Avatar({
     return (
       <div
         className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-900 rounded-full ${
-          size === "small" ? "w-8 h-8" : "w-10 h-10"
+          size === "small" ? "w-6 h-6" : "w-10 h-10"
         }`}
       >
         <span className="text-lg text-gray-600 dark:text-gray-300">A</span>{" "}
@@ -106,7 +131,7 @@ export function Avatar({
   return (
     <div
       className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-900 rounded-full ${
-        size === "small" ? "w-8 h-8" : "w-10 h-10"
+        size === "small" ? "w-6 h-6" : "w-10 h-10"
       }`}
     >
       <span

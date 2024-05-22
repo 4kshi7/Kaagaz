@@ -15,12 +15,10 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
     }
   }, [isLoading, fetchedComments]);
 
-  console.log(blog.imgUrl)
-
   return (
     <div>
       <Appbar />
-      <div className="flex  px-10 justify-center">
+      <div className="flex px-10 justify-center">
         <div className="flex w-full mt-5">
           <div className="">
             <div className="flex bg-red-300 items-center">

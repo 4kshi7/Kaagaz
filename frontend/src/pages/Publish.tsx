@@ -3,15 +3,16 @@ import { Appbar } from "../components/Appbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebaseConfig";
 import { v4 } from "uuid";
+import { Loading } from "../components/Loading";
 
 export const Publish = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,7 @@ export const Publish = () => {
   };
 
   const handleClick = async () => {
+    setLoading(true);
     let imageUrl =
       "https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4=";
 
@@ -52,8 +54,11 @@ export const Publish = () => {
       navigate(`/blog/${response.data.id}`);
     } catch (error) {
       console.error("Error posting blog:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div>
       <Appbar />
@@ -77,10 +82,16 @@ export const Publish = () => {
             onClick={handleClick}
             type="submit"
             className="mt-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+            disabled={loading} // Disable button when loading
           >
-            Publish post
+            {loading ? "Publishing..." : "Publish post"}
           </button>
           <input className="ml-4" type="file" onChange={handleImageChange} />
+          {loading && (
+            <div className="mt-4 flex justify-center">
+              <Loading />
+            </div>
+          )}
         </div>
       </div>
     </div>

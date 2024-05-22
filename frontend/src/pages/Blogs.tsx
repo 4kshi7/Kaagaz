@@ -10,14 +10,12 @@ export const Blogs = () => {
   const { loading, blogs } = useBlogs();
   const [sortByLatest, setSortByLatest] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(4); // Change this number to adjust items per page
-
-  const sortedBlogs = [...blogs]; // Create a copy of blogs array to avoid mutation
+  const [itemsPerPage] = useState(6);
+  const sortedBlogs = [...blogs];
   if (sortByLatest) {
-    sortedBlogs.reverse(); // Reverse the order to show latest posts on top
+    sortedBlogs.reverse();
   }
 
-  // Calculate indexes for pagination
   const totalPages = Math.ceil(sortedBlogs.length / itemsPerPage);
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -32,9 +30,8 @@ export const Blogs = () => {
   return (
     <div className="overflow-y-hidden">
       <Appbar />
-      {/* Button to toggle sorting order */}
       <div className="flex flex-col">
-        <div className="mx-auto mt-10 mb-5">
+        <div className="mx-auto mt-5 mb-5">
           <button
             className="mb-4 bg-black text-white px-4 py-2 rounded-xl shadow-xl"
             onClick={() => setSortByLatest(!sortByLatest)}
@@ -42,7 +39,7 @@ export const Blogs = () => {
             {sortByLatest ? "Show Oldest First" : "Show Latest First"}
           </button>
         </div>
-        <div className="flex h-fit flex-wrap gap-12  md:gap-10 lg:gap-16  justify-center items-center overflow-hidden">
+        <div className="flex h-fit flex-wrap justify-center items-center overflow-hidden  gap-5 md:gap-7 lg:gap-10 px-10">
           {sortedBlogs
             .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
             .map((blog) => (
