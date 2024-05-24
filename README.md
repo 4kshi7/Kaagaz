@@ -9,6 +9,7 @@
 - See all articles ✅
 - Create a new article ✅
 - See a specific article ✅
+- Generative AI ✅
 
 ### Stack
 
@@ -49,4 +50,5 @@
 - Prisma as an ORM [Prisma](prisma.io)
 - [Hono](https://hono.dev/) - Hono - [炎] means flame🔥 in Japanese - is a small, simple, and ultrafast web framework for the Edges. It works on any JavaScript runtime: Cloudflare Workers, Fastly Compute, Deno, Bun, Vercel, Netlify, AWS Lambda, Lambda@Edge, and Node.js.
 - [Zod](https://zod.dev) - TypeScript-first schema validation with static type inference
+- [Groq](https://groq.com/) - Generative AI Content 
 
