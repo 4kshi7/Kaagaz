@@ -8,11 +8,13 @@ import {
   createCommentInput,
   updateCommentInput,
 } from "@akshit2k/medium-common";
+import { generateArticle } from "../generateAI";
 
 export const blogRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
+    GROQ_API_KEY: string;
   };
   Variables: {
     userId: string;
@@ -154,6 +156,28 @@ blogRouter.get("/:id", async (c) => {
     });
   }
 });
+
+blogRouter.post("/gen", async (c) => {
+  try {
+    if (!c.env.GROQ_API_KEY) {
+      return c.json({
+        title: "",
+        article: "This feature is disabled.",
+      });
+    }
+    const body = await c.req.json();
+    const title = body.title;
+    const response = await generateArticle(title, "groq", c.env.GROQ_API_KEY);
+    return c.json({
+      title: title,
+      article: response,
+    });
+  } catch (err) {
+    c.status(403);
+    return c.json({ error: `Something went wrong : ${err}` });
+  }
+});
+
 
 // Create a new comment for a post
 blogRouter.post("/:postId/comments", async (c) => {

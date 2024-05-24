@@ -5,9 +5,12 @@
   },
   "dependencies": {
     "@akshit2k/medium-common": "^1.0.8",
+    "@google/generative-ai": "^0.11.4",
     "@prisma/client": "^5.10.2",
     "@prisma/extension-accelerate": "^1.0.0",
+    "groq-sdk": "^0.4.0",
     "hono": "^4.0.8",
+    "openai": "^4.47.1",
     "prisma": "^5.10.2"
   },
   "devDependencies": {
