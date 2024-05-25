@@ -13,6 +13,7 @@ export const Publish = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +60,30 @@ export const Publish = () => {
     }
   };
 
+  const handleGenerateClick = async () => {
+    if (!title) {
+      console.log("Please enter a title");
+      return;
+    }
+    setGenerating(true);
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/v1/blog/gen`,
+        { title },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      setDescription(response.data.article);
+    } catch (error) {
+      console.error("Error generating article:", error);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <div>
       <Appbar />
@@ -73,11 +98,15 @@ export const Publish = () => {
             placeholder="Title"
           />
 
+          <div className="flex justify-between mt-2"></div>
+
           <TextEditor
             onChange={(e) => {
               setDescription(e.target.value);
             }}
+            value={description} // Pass description value to TextEditor
           />
+
           <button
             onClick={handleClick}
             type="submit"
@@ -86,7 +115,17 @@ export const Publish = () => {
           >
             {loading ? "Publishing..." : "Publish post"}
           </button>
+
+          <button
+            onClick={handleGenerateClick}
+            type="button"
+            className="ml-4 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-green-700 rounded-lg focus:ring-4 focus:ring-green-200 dark:focus:ring-green-900 hover:bg-green-800"
+            disabled={generating} // Disable button when generating
+          >
+            {generating ? "Generating..." : "Generate with AI"}
+          </button>
           <input className="ml-4" type="file" onChange={handleImageChange} />
+
           {loading && (
             <div className="mt-4 flex justify-center">
               <Loading />
@@ -100,8 +139,10 @@ export const Publish = () => {
 
 export function TextEditor({
   onChange,
+  value,
 }: {
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  value: string;
 }) {
   return (
     <div className="mt-2">
@@ -116,6 +157,7 @@ export function TextEditor({
               className="focus:outline-none block w-full px-0 text-sm text-gray-800 bg-white border-0 pl-2"
               placeholder="Write an article..."
               required
+              value={value} // Set the value of the textarea
             />
           </div>
         </div>
