@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-// import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -12,16 +10,16 @@ interface BlogCardProps {
   imgUrl: string;
 }
 
-function calculateReadingTime(content: string): string {
+export function calculateReadingTime(content: string): string {
   const wordsPerSecond = 3;
   const wordsCount = content.split(/\s+/).length;
   const readingTimeInSeconds = Math.ceil(wordsCount / wordsPerSecond);
 
   if (readingTimeInSeconds < 60) {
-    return `${readingTimeInSeconds} seconds`;
+    return `${readingTimeInSeconds} sec`;
   } else {
     const readingTimeInMinutes = Math.ceil(readingTimeInSeconds / 60);
-    return `${readingTimeInMinutes} minute${
+    return `${readingTimeInMinutes} min${
       readingTimeInMinutes > 1 ? "s" : ""
     }`;
   }
@@ -54,16 +52,10 @@ export const BlogCard: React.FC<BlogCardProps> = ({
     titleSliceLength = 45;
     contentSliceLength = 170;
   }
+  const quillContent = getPlainTextFromHTML(content).split(" ").slice(0, 20).join(" ") + "...";
 
   return (
-    <motion.div
-      drag
-      dragConstraints={{ left: 0, top: 0, right: 0, bottom: 0 }}
-      whileDrag={{ scale: 1.2 }}
-      dragElastic={0.1}
-      dragSnapToOrigin={true}
-      className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 w-full "
-    >
+    <div className="flex flex-col items-center bg-white  rounded-lg shadow hover:bg-gray-100 w-full ">
       <div className=" flex gap-2 justify-between ">
         <div className=" flex flex-col justify-between">
           <div className="flex gap-2">
@@ -83,18 +75,13 @@ export const BlogCard: React.FC<BlogCardProps> = ({
                   : title}
               </div>
               <div className="text-sm text-zinc-800 tracking-tight w-[38vw] h-[85%]">
-              {content.split(" ")[0].length > 25
-            ? content.split(" ")[0].slice(0, 10) + "..."
-            : content.slice(0,contentSliceLength)}
+                {quillContent.split(" ")[0].length > 25
+                  ? quillContent.split(" ")[0].slice(0, 10) + "..."
+                  : quillContent.slice(0, contentSliceLength)}
               </div>
             </Link>
             <div className="text-black w-full text-xs font-normal flex justify-between">
-              {"Read time " + calculateReadingTime(content)}
-              <div className="">
-                {/* <button>
-                  <MdDelete className="h-4 w-4 text-black" />
-                </button> */}
-              </div>
+              {calculateReadingTime(content)+"read"}
             </div>
           </div>
         </div>
@@ -106,7 +93,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -142,5 +129,18 @@ export function Avatar({
         {name[0]}
       </span>
     </div>
+  );
+}
+
+export const getPlainTextFromHTML = (html: string): string => {
+  return html.replace(
+    /<(\w+)\s*[^>]*>|<\/(\w+)\s*>|<(\w+)\s*\/>/gi,
+    function (match, p1, p2) {
+      if (p2 === p1 && p2 !== "br") {
+        return match.startsWith("</") ? " " : "";
+      } else {
+        return match.startsWith("</") ? " " : p1 === "br" ? "" : "";
+      }
+    }
   );
 }

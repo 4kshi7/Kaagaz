@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { Appbar } from "../components/Appbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,6 +7,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebaseConfig";
 import { v4 } from "uuid";
 import { Loading } from "../components/Loading";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export const Publish = () => {
   const [title, setTitle] = useState("");
@@ -94,16 +96,14 @@ export const Publish = () => {
               setTitle(e.target.value);
             }}
             type="text"
-            className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="Title"
           />
 
           <div className="flex justify-between mt-2"></div>
 
           <TextEditor
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
+            onChange={setDescription}
             value={description} // Pass description value to TextEditor
           />
 
@@ -141,23 +141,44 @@ export function TextEditor({
   onChange,
   value,
 }: {
-  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (value: string) => void;
   value: string;
 }) {
+  var toolbarOptions = [
+    ["bold", "italic", "underline", "strike"],
+    ["blockquote", "code-block"],
+    ["link", "image", "formula"],
+
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+    [{ direction: "rtl" }], // text direction
+
+    [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+
+    ["clean"],
+  ];
+  const module = {
+    toolbar: toolbarOptions,
+  };
   return (
     <div className="mt-2">
       <div className="w-full mb-4 ">
         <div className="flex items-center justify-between border">
           <div className="my-2 bg-white rounded-b-lg w-full">
             <label className="sr-only">Publish post</label>
-            <textarea
+            <ReactQuill
+              modules={module}
+              theme="snow"
+              value={value}
               onChange={onChange}
-              id="editor"
-              rows={8}
-              className="focus:outline-none block w-full px-0 text-sm text-gray-800 bg-white border-0 pl-2"
+              className="focus:outline-none block w-full px-0 text-lg text-gray-800 bg-white border-0 pl-2"
               placeholder="Write an article..."
-              required
-              value={value} // Set the value of the textarea
             />
           </div>
         </div>
