@@ -1,6 +1,6 @@
 import Groq from 'groq-sdk';
 
-const PROMPT_PREFIX = `Write an article on this topic: `;
+const PROMPT_PREFIX = `Write an article on this topic in proper points and styling in html: `;
 
 async function groqGenerate(apiKey: string, topic: string) {
   const groq = new Groq({ apiKey });

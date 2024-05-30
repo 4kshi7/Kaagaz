@@ -149,9 +149,9 @@ export function TextEditor({
     ["blockquote", "code-block"],
     ["link", "image", "formula"],
 
-    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ header: 1 }, { header: 2 }], 
     [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-    [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+    [{ indent: "-1" }, { indent: "+1" }],
     [{ direction: "rtl" }], // text direction
 
     [{ size: ["small", false, "large", "huge"] }], // custom dropdown
@@ -168,7 +168,7 @@ export function TextEditor({
   };
   return (
     <div className="mt-2">
-      <div className="w-full mb-4 ">
+      <div className="w-full mb-4] ">
         <div className="flex items-center justify-between border">
           <div className="my-2 bg-white rounded-b-lg w-full">
             <label className="sr-only">Publish post</label>

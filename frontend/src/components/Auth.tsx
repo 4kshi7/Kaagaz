@@ -22,27 +22,19 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
       const jwt = response.data;
       localStorage.setItem("token", jwt);
       navigate("/blogs");
-      return <Loading/>
+      return <Loading />;
     } catch (e) {
       alert("Error while signing up");
       // alert the user here that the request failed
     }
   }
   return (
-    <div
-      className="h-screen flex justify-center flex-col"
-      style={{
-        backgroundImage: `linear-gradient(rgb(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), url('https://www.desktopbackground.org/download/o/2010/07/24/53156_download-wallpapers-3840x2160-hand-pencil-drawing-sketch-4k_3840x2160_h.jpg')`,
-        backgroundPosition: "center 7%",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <div className="h-screen flex justify-center flex-col bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_8rem]">
       <div className="flex justify-center ">
-        <div className="backdrop-blur-md bg-black/10 p-7 rounded-xl shadow-xl">
+        <div className="backdrop-blur-sm bg-white/40 p-7 rounded-xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]">
           <div className="px-10 ">
-            <div className="text-3xl my-2  font-semibold">
-              Create an account
+            <div className="text-3xl my-2  font-semibold text-center">
+              {type === "signin" ? "Login" : "Create an account"}
             </div>
             <div className="text-slate-800">
               {type === "signin"

@@ -12,7 +12,7 @@ export const CommentCard = ({
   createdAt,
 }: CommentCardProps) => {
   return (
-    <div className="border-b w-[90vw] border-slate-200 pb-4">
+    <div className="border-b w-full border-slate-200 pb-4">
       <div className="flex items-center gap-1">
         <div className="flex justify-center flex-col">
           <Avatar size="small"  name={authorName} />

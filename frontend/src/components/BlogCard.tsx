@@ -81,7 +81,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               </div>
             </Link>
             <div className="text-black w-full text-xs font-normal flex justify-between">
-              {calculateReadingTime(content)+"read"}
+              {calculateReadingTime(content)+" read"}
             </div>
           </div>
         </div>
