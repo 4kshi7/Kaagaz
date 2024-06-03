@@ -22,11 +22,11 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
     <>
       <Appbar />
       <div className="flex flex-col justify-center items-center p-4 md:px-10">
-        <div className="p-4  max-w-5xl">
-          <div className="text-3xl font-semibold py-4 line-clamp-4">
+        <div className="max-w-[680px] md:max-w-4xl">
+          <div className="text-xl md:text-4xl  font-semibold p-4">
             {blog?.title}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 p-4">
             <Avatar name={blog.author.name} />
             <h1>{blog.author.name || "Anonymous"}</h1>
             <h1>{formatCommentTime(blog.publishedDate)}</h1>
@@ -49,8 +49,8 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
               className="custom-quill"
             />
           </div>
-          <div className="w-full">
-            <div className="text-xl font-bold ">Comments</div>
+          <div className="w-full px-4">
+            <div className="text-xl font-semibold">Comments</div>
             <WriteComment postId={blog.id} />
             {comments &&
               comments.map((comment) => (

@@ -1,8 +1,29 @@
-.custom-quill .ql-editor {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.4em;
-  display: flex;
-  flex-direction: column;
-  gap: 2.9vh;
-  z-index: 1;
+@media (max-width: 600px) {
+  .custom-quill .ql-editor {
+    font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    line-height: 2.5vh;
+    gap: 3.1vh;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .custom-quill .ql-editor {
+    font-size: 1.2em;
+    display: flex;
+    flex-direction: column;
+    line-height: 2.9vh;
+    gap: 3.1vh;
+  }
+}
+
+@media (min-width: 1025px) {
+  .custom-quill .ql-editor {
+    font-size: 1.4em;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8vh;
+    line-height: 4.1vh;
+  }
 }

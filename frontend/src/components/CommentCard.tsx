@@ -17,7 +17,7 @@ export const CommentCard = ({
         <div className="flex justify-center flex-col">
           <Avatar size="small"  name={authorName} />
         </div>
-        <div className="font-bold text-sm">{authorName}</div>
+        <div className="font-semibold text-sm">{authorName}</div>
         <div className="text-xs font-normal text-slate-500"> • {createdAt}</div>
       </div>
       <div className="">{content}</div>
