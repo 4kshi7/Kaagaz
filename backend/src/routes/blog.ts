@@ -228,6 +228,7 @@ blogRouter.get("/:postId/comments", async (c) => {
         user: {
           select: {
             email: true,
+            name: true,
           },
         },
       },

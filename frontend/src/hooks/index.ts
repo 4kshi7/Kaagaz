@@ -88,6 +88,7 @@ export interface CommentData {
   createdAt: string;
   user: {
     email: string;
+    name: string;
   };
 }
 

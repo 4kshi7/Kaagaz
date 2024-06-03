@@ -6,6 +6,7 @@ import { Avatar, calculateReadingTime } from "./BlogCard";
 import { WriteComment } from "./WriteComment";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
+import "../quill.css";
 
 export const FullBlog = ({ blog }: { blog: PostType }) => {
   const [comments, setComments] = useState<CommentData[]>([]);
@@ -21,21 +22,32 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
     <>
       <Appbar />
       <div className="flex flex-col justify-center items-center p-4 md:px-10">
-        <div className="p-4 max-w-[680px]">
-          <div className="text-xl md:text-4xl font-extrabold py-4 line-clamp-4">
+        <div className="p-4  max-w-5xl">
+          <div className="text-3xl font-semibold py-4 line-clamp-4">
             {blog?.title}
           </div>
           <div className="flex gap-2">
             <Avatar name={blog.author.name} />
             <h1>{blog.author.name || "Anonymous"}</h1>
             <h1>{formatCommentTime(blog.publishedDate)}</h1>
-            <h1 className="font-light">{`${calculateReadingTime(blog.content)} read`}</h1>
+            <h1 className="font-light">{`${calculateReadingTime(
+              blog.content
+            )} read`}</h1>
           </div>
           <div className="md:h-[50vh] w-full flex justify-center my-4">
-            <img src={blog.imgUrl} alt="" className="w-full h-full object-contain" />
+            <img
+              src={blog.imgUrl}
+              alt=""
+              className="w-full h-full object-contain"
+            />
           </div>
           <div className="">
-            <ReactQuill value={blog.content} readOnly={true} theme={"bubble"} />
+            <ReactQuill
+              value={blog.content}
+              readOnly={true}
+              theme={"bubble"}
+              className="custom-quill"
+            />
           </div>
           <div className="w-full">
             <div className="text-xl font-bold ">Comments</div>
@@ -45,7 +57,7 @@ export const FullBlog = ({ blog }: { blog: PostType }) => {
                 <div className="mb-5">
                   <CommentCard
                     key={comment.id}
-                    authorName={comment.user.email}
+                    authorName={comment.user.name}
                     content={comment.content}
                     createdAt={formatCommentTime(comment.createdAt.toString())}
                   />

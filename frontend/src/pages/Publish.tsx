@@ -9,6 +9,28 @@ import { v4 } from "uuid";
 import { Loading } from "../components/Loading";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "../quill.css"
+import { z } from "zod";
+import { toast } from "react-toastify";
+
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
+
+const fileSchema = z.object({
+  name: z.string(),
+  size: z.number().max(MAX_FILE_SIZE, "File size must be less than 2MB"),
+  type: z.string().refine(
+    (type) => {
+      const extension = type.split("/").pop();
+      return (
+        typeof extension === "string" && ALLOWED_EXTENSIONS.includes(extension)
+      );
+    },
+    {
+      message: "File type must be one of jpg, jpeg, or png",
+    }
+  ),
+});
 
 export const Publish = () => {
   const [title, setTitle] = useState("");
@@ -30,6 +52,18 @@ export const Publish = () => {
       "https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4=";
 
     if (image) {
+      const validationResult = fileSchema.safeParse(image);
+      if (!validationResult.success) {
+        if (validationResult.error.errors.length > 1) {
+          toast.error(validationResult.error.errors[0].message);
+          toast.error(validationResult.error.errors[1].message);
+        } else {
+          toast.error(validationResult.error.errors[0].message);
+        }
+        setLoading(false);
+        return;
+      }
+
       const imageRef = ref(storage, `images/${v4()}`);
       try {
         await uploadBytes(imageRef, image);
@@ -96,7 +130,7 @@ export const Publish = () => {
               setTitle(e.target.value);
             }}
             type="text"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="Title"
           />
 
@@ -149,7 +183,7 @@ export function TextEditor({
     ["blockquote", "code-block"],
     ["link", "image", "formula"],
 
-    [{ header: 1 }, { header: 2 }], 
+    [{ header: 1 }, { header: 2 }],
     [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
     [{ indent: "-1" }, { indent: "+1" }],
     [{ direction: "rtl" }], // text direction
@@ -177,7 +211,7 @@ export function TextEditor({
               theme="snow"
               value={value}
               onChange={onChange}
-              className="focus:outline-none block w-full px-0 text-lg text-gray-800 bg-white border-0 pl-2"
+              className="custom-quill"
               placeholder="Write an article..."
             />
           </div>

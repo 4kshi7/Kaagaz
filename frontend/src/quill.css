@@ -1,0 +1,8 @@
+.custom-quill .ql-editor {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 2.9vh;
+  z-index: 1;
+}
