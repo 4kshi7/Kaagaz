@@ -3,8 +3,11 @@
     font-size: 1.1em;
     display: flex;
     flex-direction: column;
-    line-height: 2.5vh;
+    line-height: 2.9vh;
     gap: 3.1vh;
+  }
+  .custom-quill .ql-editor h1,h2,h3{
+    line-height: 5vh;
   }
 }
 
@@ -16,6 +19,9 @@
     line-height: 2.9vh;
     gap: 3.1vh;
   }
+  .custom-quill .ql-editor h1,h2,h3{
+    line-height: 5vh;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -25,5 +31,8 @@
     flex-direction: column;
     gap: 1.8vh;
     line-height: 4.1vh;
+  }
+  .custom-quill .ql-editor h1,h2,h3{
+    line-height: 5vh;
   }
 }
