@@ -178,7 +178,6 @@ blogRouter.post("/gen", async (c) => {
   }
 });
 
-
 // Create a new comment for a post
 blogRouter.post("/:postId/comments", async (c) => {
   const postId = c.req.param("postId");
@@ -275,26 +274,49 @@ blogRouter.put("/:postId/comments/:commentId", async (c) => {
   }
 });
 
-// DELETE endpoint for deleting a blog post
 blogRouter.delete("/:id", async (c) => {
   const id = c.req.param("id");
+  const userId = c.get("userId");
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
+    const post = await prisma.post.findUnique({
+      where: { id: Number(id) },
+      select: { authorId: true },
+    });
+
+    if (!post) {
+      return c.json({ error: "Post not found" }, 404);
+    }
+    const isAdmin = await prisma.user.findUnique({
+      where: { id: Number(userId) },
+      select: { isAdmin: true },
+    });
+
+    const isAuthorized =
+      post.authorId === Number(userId) || (isAdmin?.isAdmin || false);
+
+    if (!isAuthorized) {
+      return c.json({ error: "You are not authorized to delete this post" }, 403);
+    }
+
+    await prisma.comment.deleteMany({
+      where: { postId: Number(id) },
+    });
+
     await prisma.post.delete({
-      where: {
-        id: Number(id),
-      },
+      where: { id: Number(id) },
     });
-    return c.json({
-      message: "Blog post deleted successfully",
-    });
+
+    return c.json({ message: "Blog post deleted successfully" });
   } catch (e) {
     console.error("Error deleting blog post:", e);
     c.status(500);
     return c.json({ error: "Error deleting blog post" });
+  } finally {
+    await prisma.$disconnect();
   }
 });
 
@@ -368,3 +390,5 @@ blogRouter.get("/:postId/likes", async (c) => {
     return c.json({ error: "Error fetching likes" });
   }
 });
+
+
