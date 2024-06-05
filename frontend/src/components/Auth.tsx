@@ -4,9 +4,12 @@ import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
 import { Loading } from "./Loading";
+import { toast } from "react-toastify";
+import { Spinner } from "./FullBlog";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [postInputs, setPostInputs] = useState<SignupInput>({
     name: "",
     email: "",
@@ -14,6 +17,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   });
 
   async function sendRequest() {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
@@ -21,11 +25,12 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
       );
       const jwt = response.data;
       localStorage.setItem("token", jwt);
+      setLoading(false);
       navigate("/blogs");
       return <Loading />;
     } catch (e) {
-      alert("Error while signing up");
-      // alert the user here that the request failed
+      toast.error("Error while signing up");
+      setLoading(false);
     }
   }
   return (
@@ -87,7 +92,13 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
               type="button"
               className="mt-8 w-full text-white backdrop-blur-sm bg-black/50 focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 "
             >
-              {type === "signup" ? "Sign up" : "Sign in"}
+              {loading ? (
+                <Spinner />
+              ) : type === "signup" ? (
+                "Sign up"
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
         </div>
