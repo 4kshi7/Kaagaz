@@ -10,7 +10,7 @@ export const Blogs = () => {
   const { loading, blogs } = useBlogs();
   const [sortByLatest, setSortByLatest] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6);
+  const [itemsPerPage] = useState(8);
   const sortedBlogs = [...blogs];
   if (sortByLatest) {
     sortedBlogs.reverse();

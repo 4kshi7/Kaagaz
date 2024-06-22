@@ -107,8 +107,8 @@ export function Avatar({
   if (!name || name.trim() === "") {
     return (
       <div
-        className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-900 rounded-full ${
-          size === "small" ? "w-6 h-6" : "w-10 h-10"
+        className={`relative inline-flex items-center justify-center overflow-hidden bg-black rounded-full ${
+          size === "small" ? "w-6 h-6" : "w-8 h-8"
         }`}
       >
         <span className="text-lg text-gray-600 dark:text-gray-300">A</span>{" "}
@@ -117,8 +117,8 @@ export function Avatar({
   }
   return (
     <div
-      className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-900 rounded-full ${
-        size === "small" ? "w-6 h-6" : "w-10 h-10"
+      className={`relative inline-flex items-center justify-center overflow-hidden bg-black rounded-full ${
+        size === "small" ? "w-6 h-6" : "w-8 h-8"
       }`}
     >
       <span

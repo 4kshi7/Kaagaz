@@ -9,7 +9,7 @@ import { v4 } from "uuid";
 import { Loading } from "../components/Loading";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "../quill.css"
+import "../quill.css";
 import { z } from "zod";
 import { toast } from "react-toastify";
 
@@ -46,10 +46,14 @@ export const Publish = () => {
     }
   };
 
+  function getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   const handleClick = async () => {
+    const num = getRandomNumber(1, 50);
     setLoading(true);
-    let imageUrl =
-      "https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4=";
+    let imageUrl = `https://picsum.photos/300/300?${num}`;
 
     if (image) {
       const validationResult = fileSchema.safeParse(image);

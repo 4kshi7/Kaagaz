@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
-// import { Avatar } from "./BlogCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCurrentUser } from "../hooks";
+import UserMenu from "./UserMenu";
 
 export const Appbar = () => {
   const [session, setSession] = useState(
@@ -15,23 +16,27 @@ export const Appbar = () => {
     navigate("/signin");
   }
 
+  const { user, loading } = useCurrentUser();
+
+  // If user is logged out, ensure session state is updated
+  useEffect(() => {
+    if (!user && !loading) {
+      setSession(false);
+    }
+  }, [user, loading]);
+
   return (
     <div className="border-b flex justify-between items-center px-10 py-4">
-      <Link to={"/blogs"}>
+      <button
+        onClick={() => (session ? navigate("/blogs") : navigate("/signup"))}
+      >
         <div className="cursor-pointer text-xl hover:scale-[110%] duration-100">
           Kaagaz✏️
         </div>
-      </Link>
-      <div className="flex justify-center items-center gap-3">
+      </button>
+      <div className="flex justify-center items-center gap-1 md:gap-3">
         {session ? (
           <>
-            <button
-              type="button"
-              onClick={signoutHandler}
-              className="py-2 px-3 flex items-center gap-2 text-slate-600 hover:text-black hover:scale-[110%] duration-100"
-            >
-              Logout
-            </button>
             <div>
               <Link to={`/publish`}>
                 <button
@@ -45,6 +50,9 @@ export const Appbar = () => {
                 </button>
               </Link>
             </div>
+            {user && (
+              <UserMenu username={user.name} onLogout={signoutHandler} />
+            )}
           </>
         ) : (
           <Link to={"/signin"}>

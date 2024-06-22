@@ -95,7 +95,10 @@ blogRouter.put("/", async (c) => {
   });
 
   return c.json({
-    post,
+    id: post.id,
+    title: body.title,
+    content: body.content,
+    imgUrl: body.imgUrl,
   });
 });
 
@@ -296,10 +299,13 @@ blogRouter.delete("/:id", async (c) => {
     });
 
     const isAuthorized =
-      post.authorId === Number(userId) || (isAdmin?.isAdmin || false);
+      post.authorId === Number(userId) || isAdmin?.isAdmin || false;
 
     if (!isAuthorized) {
-      return c.json({ error: "You are not authorized to delete this post" }, 403);
+      return c.json(
+        { error: "You are not authorized to delete this post" },
+        403
+      );
     }
 
     await prisma.comment.deleteMany({
@@ -390,5 +396,3 @@ blogRouter.get("/:postId/likes", async (c) => {
     return c.json({ error: "Error fetching likes" });
   }
 });
-
-

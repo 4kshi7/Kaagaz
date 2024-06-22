@@ -34,6 +34,14 @@ export interface Like {
   };
 }
 
+export interface UserType {
+  id: number;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+  posts: PostType[];
+}
+
 export const useBlogs = () => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<PostType[]>([]);
@@ -126,7 +134,6 @@ export const useComments = (postId: number) => {
   return { comments, isLoading, isError };
 };
 
-
 export const useLikes = (postId: number) => {
   const [likes, setLikes] = useState<Like[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -159,4 +166,35 @@ export const useLikes = (postId: number) => {
   }, [postId]); // Trigger fetchLikes when postId changes
 
   return { likes, isLoading, isError };
+};
+
+export const useCurrentUser = () => {
+  const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      setLoading(true);
+      setError(false);
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/v1/user/me`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        });
+
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching current user details:", error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  return { user, loading, error };
 };

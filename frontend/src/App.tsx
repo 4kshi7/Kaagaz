@@ -7,6 +7,7 @@ import { Publish } from "./pages/Publish";
 import { Dashboard } from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Profile } from "./pages/Profile";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/publish" element={<Publish />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </div>
